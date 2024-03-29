@@ -32,6 +32,8 @@ const electronHandler = {
   //   return result;
   // },
   selectDirectory: () => ipcRenderer.invoke('select-directory'),
+  getFilenames: (folderPath: string) => ipcRenderer.invoke('getFilenames', folderPath),
+  // getFilesMetadata: (folderPath) => ipcRenderer.invoke('getFilesMetadata', folderPath),
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

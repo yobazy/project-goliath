@@ -5,6 +5,8 @@ import './App.css';
 
 function Hello() {
   const [folderPath, setFolderPath] = useState(""); // State to hold the selected folder
+  const [filenames, setFilenames] = useState([]); // Add this line to store filenames
+
 
   useEffect(() => {
     console.log('Folder path updated:', folderPath);
@@ -18,6 +20,15 @@ function Hello() {
     }
   };
 
+  async function handleStart() {
+    if (!folderPath) {
+      console.log('No folder selected');
+      return;
+    }
+    const filenames = await window.electron.getFilenames(folderPath); // Assuming getFilenames is correctly implemented in your preload and main process
+    setFilenames(filenames); // Update state with filenames
+  }
+
 
   return (
     <div>
@@ -27,8 +38,8 @@ function Hello() {
       <h1>PROJECT-DESTROY</h1>
 
       <div className="create-file-container">
-      <div className="input-group">
-        <label htmlFor="folderPath">Folder path</label>
+        <div id="soundcloud-folder" className="input-group">
+        <label htmlFor="folderPath">SoundCloud folder location: </label>
         <input
           id="folderPath"
           type="text"
@@ -36,12 +47,26 @@ function Hello() {
           placeholder="No folder selected"
           readOnly
         />
-          <button onClick={handleFolderSelection}>Soundcloud Folder</button>
+          <button onClick={handleFolderSelection}>Select Folder</button>
+        </div>
+        {/* <div id="spotify-folder" className="input-group">
+        <label htmlFor="folderPath">Spotify folder location: </label>
+        <input
+          id="folderPath"
+          type="text"
+          value={folderPath || ''}
+          placeholder="No folder selected"
+          readOnly
+        />
+          <button onClick={handleFolderSelection}>Select Folder</button>
+        </div> */}
       </div>
-      {/* Additional inputs for file name and file content can be added here */}
-    </div>
-    <button onClick={handleFolderSelection}>Start</button>
-
+      <button onClick={handleStart}>Start</button>
+      <div>
+      {filenames.map((filename) => (
+        <div key={filename}>{filename}</div>
+      ))}
+      </div>
     </div>
   );
 }

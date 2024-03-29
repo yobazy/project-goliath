@@ -10,6 +10,7 @@
  */
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
+import fs from 'fs';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -34,6 +35,11 @@ ipcMain.on('ipc-example', async (event, arg) => {
 ipcMain.handle('select-directory', async (event) => {
   const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
   return result.filePaths;
+});
+
+ipcMain.handle('getFilenames', async (event, folderPath) => {
+  const filenames = fs.readdirSync(folderPath);
+  return filenames;
 });
 
 if (process.env.NODE_ENV === 'production') {
