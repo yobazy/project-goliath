@@ -6,6 +6,7 @@ import './App.css';
 function Hello() {
   const [folderPath, setFolderPath] = useState(""); // State to hold the selected folder
   const [filenames, setFilenames] = useState([]); // Add this line to store filenames
+  const [fileCounter, setFileCounter] = useState(0);
 
 
   useEffect(() => {
@@ -15,6 +16,7 @@ function Hello() {
   // Function to handle folder selection
   const handleFolderSelection = async () => {
     const result = await window.electron.selectDirectory();
+    console.log(result)
     if (result.length > 0) {
       setFolderPath(result[0]);
     }
@@ -48,6 +50,7 @@ function Hello() {
           readOnly
         />
           <button onClick={handleFolderSelection}>Select Folder</button>
+          <div>{fileCounter} files detected</div>
         </div>
         {/* <div id="spotify-folder" className="input-group">
         <label htmlFor="folderPath">Spotify folder location: </label>
