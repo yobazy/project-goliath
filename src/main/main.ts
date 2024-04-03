@@ -46,6 +46,8 @@ ipcMain.handle('getFilenames', async (event, folderPath) => {
 
 ipcMain.handle('download-playlist', async (event, url, folderPath) => {
   try {
+    let skipCounter = 0;
+    let downloadCounter = 0;
     console.log('trying to connect to scdl-core');
     await SoundCloud.connect();
     console.log('connected to scdl-core');
@@ -55,13 +57,17 @@ ipcMain.handle('download-playlist', async (event, url, folderPath) => {
       // if track is contained in folderPath, skip
       if (fs.existsSync(path.join(folderPath, `${track.title}.mp3`))) {
         console.log(`${track.title} already exists, skipping...`);
+        skipCounter += 1;
         continue;
       }
+      downloadCounter += 1;
       const stream = await SoundCloud.download(track.permalink_url);
       const outputPath = path.join(folderPath, `${track.title}.mp3`);
       stream.pipe(fs.createWriteStream(outputPath));
     }
+
     console.log('Playlist downloaded successfully');
+    return { skipCounter, downloadCounter }
   } catch (error) {
     console.error('Error downloading playlist:', error);
   }

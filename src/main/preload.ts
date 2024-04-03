@@ -34,7 +34,7 @@ const electronHandler = {
   selectDirectory: () => ipcRenderer.invoke('select-directory'),
   getFilenames: (folderPath: string) => ipcRenderer.invoke('getFilenames', folderPath),
   downloadPlaylist: (url: string, folderPath: string) => ipcRenderer.invoke('download-playlist', url, folderPath),
-  downloadTrack: (url) => ipcRenderer.invoke('download-track', url),
+  downloadTrack: (url) => ipcRenderer.invoke('download-track', url)
 
 
   // getFilesMetadata: (folderPath) => ipcRenderer.invoke('getFilesMetadata', folderPath),

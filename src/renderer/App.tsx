@@ -8,6 +8,7 @@ function Hello() {
   const [filenames, setFilenames] = useState([]); // Add this line to store filenames
   const [fileCounter, setFileCounter] = useState(0);
   const [scUrl, setScUrl] = useState("");
+  const [screenLog, setScreenLog] = useState([]);
 
 
   useEffect(() => {
@@ -29,19 +30,24 @@ function Hello() {
   };
 
   async function handleStart() {
+    setScreenLog([]);
     if (!folderPath) {
       console.log('No folder selected');
+      setScreenLog([...screenLog, 'No folder selected']);
       return;
     }
     if (!scUrl) {
       console.log('No SoundCloud URL provided');
+      setScreenLog([...screenLog, 'No SoundCloud URL provided']);
       return;
     }
     const filenames = await window.electron.getFilenames(folderPath); // Assuming getFilenames is correctly implemented in your preload and main process
     setFilenames(filenames); // Update state with filenames
     console.log(scUrl, folderPath);
-    await window.electron.downloadPlaylist(scUrl, folderPath);
-    console.log('entire playlist downloaded');
+    const playlistResult = await window.electron.downloadPlaylist(scUrl, folderPath);
+    console.log('playlist downloaded');
+    setScreenLog([...screenLog, `success ${playlistResult.downloadCounter} files downloaded / ${playlistResult.skipCounter} skipped`]);
+
   };
 
 
@@ -81,6 +87,11 @@ function Hello() {
       <div>
       {filenames.map((filename) => (
         <div key={filename}>{filename}</div>
+      ))}
+      </div>
+      <div>
+      {screenLog.map((log) => (
+        <div key={log}>{log}</div>
       ))}
       </div>
     </div>
