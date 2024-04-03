@@ -1,6 +1,6 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import { Grommet, Box, Button, TextInput, Text, Paragraph } from 'grommet';
+import { Grommet, Box, Button, TextInput, Text, Paragraph, FileInput } from 'grommet';
 import icon from '../../assets/icon.svg';
 import './App.css';
 
@@ -75,7 +75,7 @@ function Hello() {
           </Text>
         </Box>
         <Box className="create-file-container">
-          <Box id="soundcloud-folder" className="input-group">
+          <Box direction="row" id="soundcloud-folder" className="input-group">
             <Text htmlFor="folderPath">SoundCloud folder location: </Text>
             <TextInput
               id="folderPath"
@@ -87,7 +87,19 @@ function Hello() {
             <Button primary label="browse" onClick={handleFolderSelection} />
             <Text>{fileCounter} files detected</Text>
           </Box>
-          <Box>
+          <Box direction="row" id="soundcloud-folder" className="input-group">
+            <Text htmlFor="folderPath">SoundCloud folder location: </Text>
+            <FileInput
+              name="folder"
+              onClick={handleFolderSelection}
+              id="folderPath"
+              type="text"
+              value={folderPath || ''}
+              placeholder="No folder selected"
+              readOnly
+            />
+          </Box>
+          <Box direction="row">
             <Text htmlFor="folderPath">SoundCloud Playlist URL: </Text>
             <TextInput
               id="sc-playlist-url"
