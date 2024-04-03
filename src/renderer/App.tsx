@@ -1,7 +1,18 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import React, { useState, useEffect } from 'react'; // Import useState hook
+import React, { useState, useEffect } from 'react';
+import { Grommet, Box, Button, TextInput, Text, Paragraph } from 'grommet';
 import icon from '../../assets/icon.svg';
 import './App.css';
+
+const theme = {
+  global: {
+    font: {
+      // family: "Roboto",
+      size: '18px',
+      height: '20px',
+    },
+  },
+};
 
 function Hello() {
   const [folderPath, setFolderPath] = useState(""); // State to hold the selected folder
@@ -9,6 +20,7 @@ function Hello() {
   const [fileCounter, setFileCounter] = useState(0);
   const [scUrl, setScUrl] = useState("");
   const [screenLog, setScreenLog] = useState([]);
+
 
 
   useEffect(() => {
@@ -52,49 +64,59 @@ function Hello() {
 
 
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>PROJECT-DESTROY</h1>
-
-      <div className="create-file-container">
-        <div id="soundcloud-folder" className="input-group">
-        <label htmlFor="folderPath">SoundCloud folder location: </label>
-        <input
-          id="folderPath"
-          type="text"
-          value={folderPath || ''}
-          placeholder="No folder selected"
-          readOnly
+    <Grommet theme={theme} full>
+      <Box align="center" pad="medium">
+        <Box align="center">
+          <Box id="logo-container" className="Hello">
+            <img width="100" alt="icon" src={icon} />
+          </Box>
+          <Text size="xlarge" weight="bold">
+            PROJECT-DESTROY
+          </Text>
+        </Box>
+        <Box className="create-file-container">
+          <Box id="soundcloud-folder" className="input-group">
+            <Text htmlFor="folderPath">SoundCloud folder location: </Text>
+            <TextInput
+              id="folderPath"
+              type="text"
+              value={folderPath || ''}
+              placeholder="No folder selected"
+              readOnly
+            />
+            <Button primary label="browse" onClick={handleFolderSelection} />
+            <Text>{fileCounter} files detected</Text>
+          </Box>
+          <Box>
+            <Text htmlFor="folderPath">SoundCloud Playlist URL: </Text>
+            <TextInput
+              id="sc-playlist-url"
+              type="text"
+              value={scUrl}
+              onChange={handleScUrlChange}
+              placeholder="enter soundcloud url"
+            />
+          </Box>
+        </Box>
+        <Button
+          primary
+          label="start"
+          style={{ width: '10%', height: 48 }}
+          // eslint-disable-next-line react/jsx-no-bind
+          onClick={handleStart}
         />
-          <button onClick={handleFolderSelection}>Select Folder</button>
-          <label>{fileCounter} files detected</label>
-        </div>
-        <div>
-        <label htmlFor="folderPath">SoundCloud Playlist URL: </label>
-        <input
-          id="sc-playlist-url"
-          type="text"
-          value={scUrl}
-          onChange={handleScUrlChange}
-          placeholder="enter soundcloud url"
-          // readOnly
-        />
-        </div>
-      </div>
-      <button onClick={handleStart}>Start</button>
-      <div>
-      {filenames.map((filename) => (
-        <div key={filename}>{filename}</div>
-      ))}
-      </div>
-      <div>
-      {screenLog.map((log) => (
-        <div key={log}>{log}</div>
-      ))}
-      </div>
-    </div>
+        <Box>
+          {filenames.map((filename) => (
+            <div key={filename}>{filename}</div>
+          ))}
+        </Box>
+        <Box>
+          {screenLog.map((log) => (
+            <div key={log}>{log}</div>
+          ))}
+        </Box>
+      </Box>
+    </Grommet>
   );
 }
 
