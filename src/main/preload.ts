@@ -1,6 +1,6 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
-import { contextBridge, ipcRenderer, IpcRendererEvent, dialog } from 'electron';
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 // import fs from 'fs';
 
 export type Channels = 'ipc-example' | 'select-directory';
@@ -32,10 +32,11 @@ const electronHandler = {
   //   return result;
   // },
   selectDirectory: () => ipcRenderer.invoke('select-directory'),
-  getFilenames: (folderPath: string) => ipcRenderer.invoke('getFilenames', folderPath),
-  downloadPlaylist: (url: string, folderPath: string) => ipcRenderer.invoke('download-playlist', url, folderPath),
-  downloadTrack: (url) => ipcRenderer.invoke('download-track', url)
-
+  getFilenames: (folderPath: string) =>
+    ipcRenderer.invoke('getFilenames', folderPath),
+  downloadPlaylist: (url: string, folderPath: string) =>
+    ipcRenderer.invoke('download-playlist', url, folderPath),
+  downloadTrack: (url: string) => ipcRenderer.invoke('download-track', url),
 
   // getFilesMetadata: (folderPath) => ipcRenderer.invoke('getFilesMetadata', folderPath),
 };
