@@ -7,6 +7,7 @@ function Hello() {
   const [folderPath, setFolderPath] = useState(""); // State to hold the selected folder
   const [filenames, setFilenames] = useState([]); // Add this line to store filenames
   const [fileCounter, setFileCounter] = useState(0);
+  const [scUrl, setScUrl] = useState("");
 
 
   useEffect(() => {
@@ -16,10 +17,15 @@ function Hello() {
   // Function to handle folder selection
   const handleFolderSelection = async () => {
     const result = await window.electron.selectDirectory();
-    console.log(result)
     if (result.length > 0) {
+      const filenames = await window.electron.getFilenames(result[0]);
       setFolderPath(result[0]);
+      setFileCounter(filenames.length);
     }
+  };
+
+  const handleScUrlChange = (event) => {
+    setScUrl(event.target.value);
   };
 
   async function handleStart() {
@@ -27,9 +33,16 @@ function Hello() {
       console.log('No folder selected');
       return;
     }
+    if (!scUrl) {
+      console.log('No SoundCloud URL provided');
+      return;
+    }
     const filenames = await window.electron.getFilenames(folderPath); // Assuming getFilenames is correctly implemented in your preload and main process
     setFilenames(filenames); // Update state with filenames
-  }
+    console.log(scUrl, folderPath);
+    await window.electron.downloadPlaylist(scUrl, folderPath);
+    console.log('entire playlist downloaded');
+  };
 
 
   return (
@@ -50,19 +63,19 @@ function Hello() {
           readOnly
         />
           <button onClick={handleFolderSelection}>Select Folder</button>
-          <div>{fileCounter} files detected</div>
+          <label>{fileCounter} files detected</label>
         </div>
-        {/* <div id="spotify-folder" className="input-group">
-        <label htmlFor="folderPath">Spotify folder location: </label>
+        <div>
+        <label htmlFor="folderPath">SoundCloud Playlist URL: </label>
         <input
-          id="folderPath"
+          id="sc-playlist-url"
           type="text"
-          value={folderPath || ''}
-          placeholder="No folder selected"
-          readOnly
+          value={scUrl}
+          onChange={handleScUrlChange}
+          placeholder="enter soundcloud url"
+          // readOnly
         />
-          <button onClick={handleFolderSelection}>Select Folder</button>
-        </div> */}
+        </div>
       </div>
       <button onClick={handleStart}>Start</button>
       <div>

@@ -13,8 +13,10 @@ import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import fs from 'fs';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { SoundCloud } from 'scdl-core';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
 
 class AppUpdater {
   constructor() {
@@ -40,6 +42,29 @@ ipcMain.handle('select-directory', async (event) => {
 ipcMain.handle('getFilenames', async (event, folderPath) => {
   const filenames = fs.readdirSync(folderPath);
   return filenames;
+});
+
+ipcMain.handle('download-playlist', async (event, url, folderPath) => {
+  try {
+    console.log('trying to connect to scdl-core');
+    await SoundCloud.connect();
+    console.log('connected to scdl-core');
+    const playlist = await SoundCloud.playlists.getPlaylist(url);
+    console.log('playlist fetched');
+    for (const track of playlist.tracks) {
+      // if track is contained in folderPath, skip
+      if (fs.existsSync(path.join(folderPath, `${track.title}.mp3`))) {
+        console.log(`${track.title} already exists, skipping...`);
+        continue;
+      }
+      const stream = await SoundCloud.download(track.permalink_url);
+      const outputPath = path.join(folderPath, `${track.title}.mp3`);
+      stream.pipe(fs.createWriteStream(outputPath));
+    }
+    console.log('Playlist downloaded successfully');
+  } catch (error) {
+    console.error('Error downloading playlist:', error);
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {
